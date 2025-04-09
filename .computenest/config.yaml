@@ -1,0 +1,83 @@
+Service:
+  RegionId: cn-hangzhou
+  DeployType: ros
+  OperationMetadata:
+    StatusOperationConfigs:
+    - TemplateName: ECS单机版
+      SupportOperations:
+      - Start
+      - Stop
+      - Restart
+    SupportBackup: true
+    ModifyParametersConfig:
+    - TemplateName: ECS单机版
+      Operation:
+      - Name: 变更ECS实例规格
+        Description: 变更ECS实例规格
+        Type: Custom
+        Parameters:
+        - EcsInstanceType
+      - Name: 变更ECS实例密码
+        Description: 变更ECS实例密码
+        Type: Custom
+        Parameters:
+        - InstancePassword
+  DeployMetadata:
+    SupplierDeployMetadata:
+      SupplierTemplateConfigs:
+      - Name: ECS单机版
+        Url: 'ros_templates/template.yaml'
+        ArchitectureDiagramUrl: 'resources/architecture/architecture.jpg'
+        AllowedRegions:
+        - ap-southeast-1
+      ArtifactRelation:
+        ecs_image_FastGPT:
+          ArtifactId: ${Artifact.EcsImage.ArtifactId}
+          ArtifactVersion: draft
+    TemplateConfigs:
+    - Name: ECS单机版
+      Url: 'ros_templates/template.yaml'
+      ArchitectureDiagramUrl: 'resources/architecture/architecture.jpg'
+      AllowedRegions:
+      - ap-southeast-1
+  ServiceType: private
+  ServiceInfo:
+    # 英文版可以再配置Locale为en-US的服务信息
+  - Locale: zh-CN
+    Name: LYH-RAIN/FastGPT-0olk
+    ShortDescription: Service description
+    Image: 
+      https://service-info-public.oss-cn-hangzhou.aliyuncs.com/1853370294850618/service-image/bfd30cc4-e959-4093-b5cb-77a05058b911.png
+    SoftwareInfos: []
+Artifact:
+  EcsImage:
+    ArtifactType: EcsImage
+    ArtifactName: ecs_image_FastGPT
+    Description: FastGPT EcsImage
+    SupportRegionIds:
+    - ap-southeast-1
+    ArtifactBuildProperty:
+      CodeRepo:
+        Platform: github
+        Owner: LYH-RAIN
+        RepoName: LYH-RAIN/FastGPT
+        Branch: main
+      RegionId: ap-southeast-1
+      CommandType: RunShellScript
+      CommandContent: |-
+        mkdir -p /root/application
+        mkdir -p "/root/application/deploy/docker"
+        if [ -e "/root/code/deploy/docker/config.json" ]; then cp -r "/root/code/deploy/docker/config.json" "/root/application/deploy/docker/"; fi
+        mkdir -p "/root/application/deploy/docker/mongo"
+        if [ -e "/root/code/deploy/docker/mongo/data" ]; then cp -r "/root/code/deploy/docker/mongo/data" "/root/application/deploy/docker/mongo/"; fi
+        if [ -e "/root/code/deploy/docker/aiproxy_pg" ]; then cp -r "/root/code/deploy/docker/aiproxy_pg" "/root/application/deploy/docker/"; fi
+        mkdir -p "/root/application/deploy/docker/pg"
+        if [ -e "/root/code/deploy/docker/pg/data" ]; then cp -r "/root/code/deploy/docker/pg/data" "/root/application/deploy/docker/pg/"; fi
+        if [ -e "/root/code/deploy/docker/docker-compose-pgvector.yml" ]; then cp -r "/root/code/deploy/docker/docker-compose-pgvector.yml" "/root/application/deploy/docker/"; fi
+        mkdir -p "/root/application/deploy/docker/redis"
+        if [ -e "/root/code/deploy/docker/redis/data" ]; then cp -r "/root/code/deploy/docker/redis/data" "/root/application/deploy/docker/redis/"; fi
+        if [ -e "/root/code/.env" ]; then cp -r "/root/code/.env" "/root/application/"; fi
+        cd /root/application
+        sed -i 's/pull_policy: always/pull_policy: if_not_present/g' deploy/docker/docker-compose-pgvector.yml
+        docker compose -f deploy/docker/docker-compose-pgvector.yml build 
+        docker compose -f deploy/docker/docker-compose-pgvector.yml pull 2>&1 | stdbuf -oL grep -viE 'Downloading|sha256|extracting|KiB|Downloaded' || true;
