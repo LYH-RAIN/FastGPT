@@ -1,13 +1,1 @@
-HelmChartPath: ''
-RuntimeType: Container
-ServiceType: private
-ArtifactSourceType: DockerCompose
-ServiceBuildRegion: ap-southeast-1
-RepoName: LYH-RAIN/FastGPT
-DockerComposeEnvPath: .env
-RegionId: ap-southeast-1
-CustomParameters: ''
-DockerComposeYamlPath: deploy/docker/docker-compose-pgvector.yml
-Owner: LYH-RAIN
-Branch: main
-Platform: github
+{"RepoName":"LYH-RAIN/FastGPT","RegionId":"cn-hangzhou","Owner":"LYH-RAIN","Branch":"main","Platform":"github"}
