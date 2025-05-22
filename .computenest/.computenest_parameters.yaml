@@ -5,7 +5,7 @@ ArtifactSourceType: DockerCompose
 ServiceBuildRegion: ap-southeast-1
 RepoName: LYH-RAIN/FastGPT
 DockerComposeEnvPath: .env
-RegionId: cn-hangzhou
+RegionId: ap-southeast-1
 CustomParameters: ''
 DockerComposeYamlPath: deploy/docker/docker-compose-pgvector.yml
 Owner: LYH-RAIN

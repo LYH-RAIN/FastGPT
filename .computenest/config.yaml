@@ -1,5 +1,5 @@
 Service:
-  RegionId: cn-hangzhou
+  RegionId: ap-southeast-1
   DeployType: ros
   OperationMetadata:
     StatusOperationConfigs:
@@ -44,11 +44,11 @@ Service:
   ServiceInfo:
     # 英文版可以再配置Locale为en-US的服务信息
   - Locale: zh-CN
-    Name: LYH-RAIN/FastGPT-0olk
+    Name: LYH-RAIN/FastGPT-6jlw
     ShortDescription: Service description
     Image: 
       https://service-info-public.oss-cn-hangzhou.aliyuncs.com/1853370294850618/service-image/bfd30cc4-e959-4093-b5cb-77a05058b911.png
-    SoftwareInfos: []
+    Softwares: []
 Artifact:
   EcsImage:
     ArtifactType: EcsImage
@@ -67,16 +67,16 @@ Artifact:
       CommandContent: |-
         mkdir -p /root/application
         mkdir -p "/root/application/deploy/docker"
-        if [ -e "/root/code/deploy/docker/config.json" ]; then cp -r "/root/code/deploy/docker/config.json" "/root/application/deploy/docker/"; fi
-        mkdir -p "/root/application/deploy/docker/mongo"
-        if [ -e "/root/code/deploy/docker/mongo/data" ]; then cp -r "/root/code/deploy/docker/mongo/data" "/root/application/deploy/docker/mongo/"; fi
         if [ -e "/root/code/deploy/docker/aiproxy_pg" ]; then cp -r "/root/code/deploy/docker/aiproxy_pg" "/root/application/deploy/docker/"; fi
         mkdir -p "/root/application/deploy/docker/pg"
         if [ -e "/root/code/deploy/docker/pg/data" ]; then cp -r "/root/code/deploy/docker/pg/data" "/root/application/deploy/docker/pg/"; fi
-        if [ -e "/root/code/deploy/docker/docker-compose-pgvector.yml" ]; then cp -r "/root/code/deploy/docker/docker-compose-pgvector.yml" "/root/application/deploy/docker/"; fi
+        if [ -e "/root/code/deploy/docker/config.json" ]; then cp -r "/root/code/deploy/docker/config.json" "/root/application/deploy/docker/"; fi
+        if [ -e "/root/code/.env" ]; then cp -r "/root/code/.env" "/root/application/"; fi
         mkdir -p "/root/application/deploy/docker/redis"
         if [ -e "/root/code/deploy/docker/redis/data" ]; then cp -r "/root/code/deploy/docker/redis/data" "/root/application/deploy/docker/redis/"; fi
-        if [ -e "/root/code/.env" ]; then cp -r "/root/code/.env" "/root/application/"; fi
+        mkdir -p "/root/application/deploy/docker/mongo"
+        if [ -e "/root/code/deploy/docker/mongo/data" ]; then cp -r "/root/code/deploy/docker/mongo/data" "/root/application/deploy/docker/mongo/"; fi
+        if [ -e "/root/code/deploy/docker/docker-compose-pgvector.yml" ]; then cp -r "/root/code/deploy/docker/docker-compose-pgvector.yml" "/root/application/deploy/docker/"; fi
         cd /root/application
         sed -i 's/pull_policy: always/pull_policy: if_not_present/g' deploy/docker/docker-compose-pgvector.yml
         docker compose -f deploy/docker/docker-compose-pgvector.yml build 
